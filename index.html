@@ -1,0 +1,119 @@
+<!DOCTYPE HTML>
+<html>
+   <head>
+      <title>Evento tecla</title>
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+      <style>
+         #misil {position:absolute;bottom:10px;left:300px;
+         height:70px;}
+         #ovni { position:absolute;bottom:500px;left:0px;}
+         #puntos {position:absolute;bottom:10px;
+         right:30px;width:75px;height:25px;
+         background-color:blue;color:white;
+         text-align:center}    
+         body{
+         background-image: url("background.png");
+         }
+      </style>
+   </head>
+   <body>
+      <script type='text/javascript'>
+         var pokemons= ["pikachu.png","squirtle.png","bulbasur.png","charmander.png"];
+         var pokemonSeleccionado = 0;
+         var limiteD = window.innerWidth,
+         limiteS = window.innerHeight,
+         avanceOvni = 3,
+         avanceMisil = 6,
+         avancev = 5,
+         pid,
+         puntuacion = 0,
+         posicionOvni = 0,
+         posicionMisil = 300,
+         estaDisparado = false,
+         sentidoOvni = 1,
+         sentidoMisil = 1,
+         margenChoque = 0;
+         
+         function MueveUFO(){
+         if(((posicionOvni+avanceOvni*sentidoOvni)>(limiteD-$('#ovni').width())) || ((posicionOvni+avanceOvni*sentidoOvni)<0) ){
+             sentidoOvni = sentidoOvni * (-1);
+             pokemonSeleccionado++;
+             if(pokemonSeleccionado >= pokemons.length){
+                 pokemonSeleccionado = 0;
+             }
+             $('#ovni').attr("src", pokemons[pokemonSeleccionado]);
+         }
+         posicionOvni = posicionOvni + avanceOvni*sentidoOvni;
+         $('#ovni').css("left", posicionOvni);
+         } // de la función MueveUFO
+         
+         function Dispara(){
+         var elmisil = document.getElementById('misil');
+         var elufo = document.getElementById('ovni');
+         var posh_ufo = parseInt(ovni.style.left);
+         var posv_ufo = parseInt(ovni.style.bottom);      
+         var ancho_ufo = parseInt(ovni.style.width);
+         var posv_m = parseInt(elmisil.style.bottom);
+         var posh_m = parseInt(elmisil.style.left);
+         var alto_m = parseInt(elmisil.style.height);
+         var choca = (posv_m + alto_m == posv_ufo) &&
+                    (posh_m >= posh_ufo - margenChoque) &&
+                    (posh_m <= posh_ufo + ancho_ufo + margenChoque);
+         if (choca){
+          puntuacion = puntuacion + 100;
+          document.getElementById('puntos').innerHTML = puntuacion;
+          clearInterval(pid);
+          posv_m = 0;     
+          estaDisparado = false;
+          }              
+         if (posv_m > limiteS){
+          clearInterval(pid);
+          posv_m = 0;
+          estaDisparado = false;
+          }
+         else{  
+          posv_m = posv_m + avancev;
+          }
+         posv_m = posv_m + 'px';
+         misil.style.bottom = posv_m;
+         }   
+         
+         function MueveMisil (evento){
+         //Recuperar aquí la tecla pulsada 
+         // y la posicion horizontal del misil
+            var misil =$('#misil');
+          var caracter =evento.keyCode; 
+         if (caracter === 109){
+          //Mover a la derecha
+           if(posicionMisil+avanceMisil < (limiteD-$('#misil').width())){
+               posicionMisil = posicionMisil+avanceMisil;
+           }
+                 
+          }
+         if (caracter === 110){
+         //Mover a la izquierda
+           if(posicionMisil-avanceMisil > 0){
+               posicionMisil = posicionMisil-avanceMisil;
+           }
+          }   
+         
+               misil.css("left", posicionMisil);
+         
+         if (caracter === 32){
+          if (!estaDisparado){
+            pid = setInterval(Dispara,15);
+            estaDisparado = true;
+            }
+          } 
+         }
+         
+         document.onload = setInterval(MueveUFO,10);
+         document.onkeypress = MueveMisil;
+         
+         
+      </script>
+      <img id='misil' src='bola.png' STYLE="left:300px;bottom:10px;height:70px;"/>
+      <img id='ovni'  src='pikachu.png' STYLE="left:0px;bottom:500px;width:60px" />
+      <div id='puntos'>0</div>
+   </body>
+</html>
